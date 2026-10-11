@@ -7,8 +7,11 @@ import {
   Link,
   useNavigate,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 import './App.css';
+import AuthModal from './components/AuthModal.jsx';
+import { useAuth } from './context/AuthContext.jsx';
 import goaVideo from './goa_video.mp4';
 
 const img = (id, width = 900) =>
@@ -101,7 +104,7 @@ const experiences = {
     { name: 'Snow Adventures', caption: 'Winter escapes', image: 'photo-1626621341517-bbf3d9990a23' },
     { name: 'Mountain Trails', caption: 'Explore the hills', image: 'photo-1464278533981-50106e6171b1' },
     { name: 'River Rafting', caption: 'Adventure awaits', image: 'photo-1530866495561-507c9faab2ed' },
-    { name: 'Local Cafés', caption: 'Food with a view', image: 'photo-1501339847302-ac426a4a7cbb' },
+    { name: 'Local Caf├⌐s', caption: 'Food with a view', image: 'photo-1501339847302-ac426a4a7cbb' },
   ],
   kerala: [
     { name: 'Backwaters', caption: 'Peaceful waters', image: 'photo-1602216056096-3b40cc0c9944' },
@@ -143,7 +146,7 @@ const experiences = {
     { name: 'Waterfalls', caption: 'Nature at its best', image: 'photo-1432405972618-c60b0225b8f9' },
     { name: 'Lake Escapes', caption: 'Quiet waters', image: 'photo-1501785888041-af3ef285b470' },
     { name: 'Living Root Bridges', caption: 'Nature and local ingenuity', image: 'photo-1500530855697-b586d89ba3ee' },
-    { name: 'Cafés & Food', caption: 'Local favourites', image: 'photo-1501339847302-ac426a4a7cbb' },
+    { name: 'Caf├⌐s & Food', caption: 'Local favourites', image: 'photo-1501339847302-ac426a4a7cbb' },
   ],
   hampi: [
     { name: 'Ancient Ruins', caption: 'Explore historic wonders', image: 'photo-1606293926075-69a00dbfde81' },
@@ -166,7 +169,7 @@ const travelPackages = [
     id: 'solo',
     title: 'Solo Explorer',
     type: 'SOLO TRIP',
-    price: '₹6,999',
+    price: 'Γé╣6,999',
     per: 'per person',
     duration: '3 Days / 2 Nights',
     description: 'Explore at your own pace, from local attractions to hidden gems.',
@@ -177,7 +180,7 @@ const travelPackages = [
     id: 'couple',
     title: 'Couple Getaway',
     type: 'COUPLE SPECIAL',
-    price: '₹18,999',
+    price: 'Γé╣18,999',
     per: 'for 2 people',
     duration: '3 Days / 2 Nights',
     description: 'Sunset spots, relaxing experiences and memorable moments for two.',
@@ -189,7 +192,7 @@ const travelPackages = [
     id: 'family',
     title: 'Family Holiday',
     type: 'FAMILY TRIP',
-    price: '₹24,999',
+    price: 'Γé╣24,999',
     per: 'for a family of 4',
     duration: '4 Days / 3 Nights',
     description: 'A relaxed family escape with sightseeing and activities for different ages.',
@@ -199,34 +202,74 @@ const travelPackages = [
 ];
 
 const itineraries = [
-  { name: 'Beach Getaway', label: 'BEACH VIBES', days: '3 Days', detail: 'Beaches + Local Food', price: '₹8,999', image: 'photo-1512343879784-a960bf40e7f2' },
-  { name: 'Mountain Escape', label: 'HILLS & NATURE', days: '5 Days', detail: 'Mountains + Scenic Trails', price: '₹14,999', image: 'photo-1626621341517-bbf3d9990a23' },
-  { name: 'Royal Rajasthan', label: 'CULTURE TRIP', days: '4 Days', detail: 'Forts + Desert + Food', price: '₹12,999', image: 'photo-1477587458883-47145ed94245' },
+  { name: 'Beach Getaway', label: 'BEACH VIBES', days: '3 Days', detail: 'Beaches + Local Food', price: 'Γé╣8,999', image: 'photo-1512343879784-a960bf40e7f2' },
+  { name: 'Mountain Escape', label: 'HILLS & NATURE', days: '5 Days', detail: 'Mountains + Scenic Trails', price: 'Γé╣14,999', image: 'photo-1626621341517-bbf3d9990a23' },
+  { name: 'Royal Rajasthan', label: 'CULTURE TRIP', days: '4 Days', detail: 'Forts + Desert + Food', price: 'Γé╣12,999', image: 'photo-1477587458883-47145ed94245' },
 ];
 
-function Navbar() {
+function Navbar({ onOpenAuth, isAuthenticated, onLogout }) {
+  const navigate = useNavigate();
+
   return (
     <header className="navbar">
       <Link to="/" className="brand">
-        <span className="brand-symbol">☼</span>
+        <span className="brand-symbol">Γÿ╝</span>
         <span>
           tripora<span className="brand-dot">.</span>
-          <small>YOUR JOURNEY · YOUR INDIA</small>
+          <small>YOUR JOURNEY ┬╖ YOUR INDIA</small>
         </span>
       </Link>
 
-      <nav className="nav-links">
-        <Link to="/">Home</Link>
-        <Link to="/explore">Destinations</Link>
-        <Link to="/plan">Trip Planner</Link>
-        <a href="/#trips">Travel Guides</a>
-      </nav>
 
-      <div className="nav-actions">
-        <Link to="/explore" className="nav-symbol" aria-label="Search">⌕</Link>
-        <Link to="/login" className="nav-symbol" aria-label="Saved trips">♡</Link>
-        <Link to="/plan" className="nav-cta">Plan My Trip <span>→</span></Link>
-      </div>
+      <div className="nav-links">
+  <Link to="/">Home</Link>
+  <Link to="/destinations">Destinations</Link>
+  <Link to="/plan">Trip Planner</Link>
+  <Link to="/guides">Travel Guides</Link>
+
+  <button
+    type="button"
+    className="nav-auth-link"
+    onClick={() =>
+      isAuthenticated ? onLogout() : onOpenAuth("login")
+    }
+  >
+    {isAuthenticated ? "Log out" : "Log in"}
+  </button>
+</div>
+
+
+
+
+<button
+  type="button"
+  onClick={() => isAuthenticated ? onLogout() : onOpenAuth("login")}
+  className="nav-symbol nav-auth-trigger"
+  aria-label={isAuthenticated ? "Log out" : "Log in"}
+>
+  ΓÖí
+</button>
+
+{/* <Link to="/plan" className="nav-cta">
+  Plan My Trip <span>ΓåÆ</span>
+</Link> */}
+
+<button
+  type="button"
+  className="nav-cta"
+  onClick={() => {
+    if (!isAuthenticated) {
+      onOpenAuth("login", "/plan");
+      return;
+    }
+
+    navigate("/plan");
+  }}
+>
+  Plan My Trip <span>ΓåÆ</span>
+</button>
+
+
     </header>
   );
 }
@@ -238,13 +281,13 @@ function SectionHeading({ eyebrow, title, link = '/explore', action = 'View all'
         {eyebrow && <p className="section-eyebrow">{eyebrow}</p>}
         <h2><i />{title}</h2>
       </div>
-      <Link to={link} className="section-link">{action} <span>→</span></Link>
+      <Link to={link} className="section-link">{action} <span>ΓåÆ</span></Link>
     </div>
   );
 }
 
-function Home() {
-  const navigate = useNavigate();
+function Home({ isAuthenticated, onOpenAuth }) {
+  const navigate = useNavigate();  
   const [activeSlide, setActiveSlide] = useState(0);
   const [from, setFrom] = useState('Pune');
   const [destination, setDestination] = useState('');
@@ -304,7 +347,7 @@ function Home() {
           </h1>
 
           <p>
-            Personalized trips, real experiences and hidden gems —
+            Personalized trips, real experiences and hidden gems ΓÇö
             <br className="desktop-break" /> all in one place.
           </p>
         </div>
@@ -315,7 +358,7 @@ function Home() {
           onClick={previousSlide}
           aria-label="Previous destination"
         >
-          ‹
+          ΓÇ╣
         </button>
 
         <button
@@ -324,11 +367,12 @@ function Home() {
           onClick={nextSlide}
           aria-label="Next destination"
         >
-          ›
+          ΓÇ║
         </button>
 
-        <div className="hero-active-destination" key={activePlace.slug}>
-          <span className="hero-location-icon">⌖</span>
+        {/* <div className="hero-active-destination" key={activePlace.slug}> */}
+        <div className="hero-active-destination">
+          <span className="hero-location-icon">Γîû</span>
           <div>
             <h2>{activePlace.name}</h2>
             <span className="hero-location-line" />
@@ -341,7 +385,7 @@ function Home() {
             {places.map((place, index) => (
               <button
                 type="button"
-                key={place.slug}
+                key={`${place.slug}-${index}`}
                 className={index === activeSlide ? 'active' : ''}
                 onClick={() => setActiveSlide(index)}
                 aria-label={`Show ${place.name}`}
@@ -353,7 +397,7 @@ function Home() {
 
         <form className="home-search" onSubmit={search}>
           <label className="search-cell">
-            <span className="search-icon">⌖</span>
+            <span className="search-icon">Γîû</span>
             <span>
               <small>From</small>
               <select value={from} onChange={(e) => setFrom(e.target.value)}>
@@ -365,7 +409,7 @@ function Home() {
           </label>
 
           <label className="search-cell">
-            <span className="search-icon">⌁</span>
+            <span className="search-icon">Γîü</span>
             <span>
               <small>Where to?</small>
               <input
@@ -377,7 +421,7 @@ function Home() {
           </label>
 
           <label className="search-cell">
-            <span className="search-icon">▦</span>
+            <span className="search-icon">Γûª</span>
             <span>
               <small>When</small>
               <input
@@ -389,7 +433,7 @@ function Home() {
           </label>
 
           <label className="search-cell">
-            <span className="search-icon">♙</span>
+            <span className="search-icon">ΓÖÖ</span>
             <span>
               <small>Travelers</small>
               <select value={travelers} onChange={(e) => setTravelers(e.target.value)}>
@@ -401,7 +445,7 @@ function Home() {
           </label>
 
           <button className="search-button" type="submit">
-            Explore Trips <span>→</span>
+            Explore Trips <span>ΓåÆ</span>
           </button>
         </form>
       </section>
@@ -440,7 +484,7 @@ function Home() {
                     <strong>{place.name}</strong>
                     <small>{place.region}</small>
                   </span>
-                  <span className="round-arrow">↗</span>
+                  <span className="round-arrow">Γåù</span>
                 </span>
               </Link>
             ))}
@@ -456,7 +500,7 @@ function Home() {
           />
 
           <p className="section-description">
-            Curated plans for every kind of traveller — from beach holidays to mountain adventures.
+            Curated plans for every kind of traveller ΓÇö from beach holidays to mountain adventures.
           </p>
 
           <div className="itinerary-grid">
@@ -468,20 +512,42 @@ function Home() {
                 </div>
 
                 <div className="itinerary-details">
-                  <h3>{trip.days} – {trip.name}</h3>
-                  <p>{trip.days} · {trip.detail}</p>
+                  <h3>{trip.days} ΓÇô {trip.name}</h3>
+                  <p>{trip.days} ┬╖ {trip.detail}</p>
 
                   <div className="itinerary-price">
                     <span>
                       <strong>{trip.price}</strong>
-                      <small> per person · estimated</small>
+                      <small> per person ┬╖ estimated</small>
                     </span>
-                    <Link
-                      to={`/plan?to=${encodeURIComponent(trip.name)}`}
-                      className="round-arrow dark-arrow"
-                    >
-                      →
-                    </Link>
+                    
+                    <button
+  type="button"
+  className="round-arrow dark-arrow"
+  // onClick={() => {
+  //   if (!isAuthenticated) {
+  //     onOpenAuth("login");
+  //     return;
+  //   }
+
+  //   navigate(`/plan?to=${encodeURIComponent(trip.name)}`);
+  // }}
+  
+onClick={() => {
+  const destination = `/plan?to=${encodeURIComponent(trip.name)}`;
+
+  if (!isAuthenticated) {
+    onOpenAuth("login", destination);
+    return;
+  }
+
+  navigate(destination);
+}}
+
+>
+  ΓåÆ
+</button>
+
                   </div>
                 </div>
               </article>
@@ -502,9 +568,9 @@ function Home() {
             <h2>Let AI Plan It for You</h2>
             <p>Tell us your preferences and get a personalized itinerary.</p>
             <div className="planner-perks">
-              <span>✳ Smart itineraries</span>
-              <span>⌖ Local suggestions</span>
-              <span>₹ Budget friendly</span>
+              <span>Γ£│ Smart itineraries</span>
+              <span>Γîû Local suggestions</span>
+              <span>Γé╣ Budget friendly</span>
             </div>
           </div>
 
@@ -514,14 +580,14 @@ function Home() {
 
       <footer className="footer">
         <Link to="/" className="brand">
-          <span className="brand-symbol">☼</span>
+          <span className="brand-symbol">Γÿ╝</span>
           <span>
             tripora<span className="brand-dot">.</span>
-            <small>YOUR JOURNEY · YOUR INDIA</small>
+            <small>YOUR JOURNEY ┬╖ YOUR INDIA</small>
           </span>
         </Link>
         <p>Same place, new stories.</p>
-        <Link to="/plan">Plan your next journey →</Link>
+        <Link to="/plan">Plan your next journey ΓåÆ</Link>
       </footer>
     </>
   );
@@ -588,13 +654,13 @@ function QuickPlanner() {
       </div>
 
       <button className="quick-submit" type="submit">
-        Generate My Trip <span>→</span>
+        Generate My Trip <span>ΓåÆ</span>
       </button>
     </form>
   );
 }
 
-function DestinationPage() {
+function DestinationPage({ onOpenAuth }) {
   const { slug } = useParams();
   const place = places.find(item => item.slug === slug);
   const name = place?.name || 'India';
@@ -619,10 +685,10 @@ function DestinationPage() {
 
         <nav className="cinematic-nav">
           <Link to="/" className="cinematic-logo">
-            <span className="logo-symbol">☼</span>
+            <span className="logo-symbol">Γÿ╝</span>
             <span>
               <strong>tripora.</strong>
-              <small>YOUR JOURNEY · YOUR INDIA</small>
+              <small>YOUR JOURNEY ┬╖ YOUR INDIA</small>
             </span>
           </Link>
 
@@ -634,7 +700,7 @@ function DestinationPage() {
           </div>
 
           <Link to="/plan" className="cinematic-nav-button">
-            Plan My Trip <span>→</span>
+            Plan My Trip <span>ΓåÆ</span>
           </Link>
         </nav>
 
@@ -671,7 +737,7 @@ function DestinationPage() {
                     </span>
                     <strong>{item.name}</strong>
                     <small>{item.caption}</small>
-                    <span className="cinematic-card-arrow">↗</span>
+                    <span className="cinematic-card-arrow">Γåù</span>
                   </span>
                 </button>
               ))}
@@ -709,7 +775,7 @@ function DestinationPage() {
 
                 <ul>
                   {pkg.features.map(feature => (
-                    <li key={feature}><span>✓</span>{feature}</li>
+                    <li key={feature}><span>Γ£ô</span>{feature}</li>
                   ))}
                 </ul>
 
@@ -723,7 +789,7 @@ function DestinationPage() {
                     className="travel-package-details"
                     to={`/plan?to=${encodeURIComponent(name)}&style=${encodeURIComponent(pkg.id)}`}
                   >
-                    View Details <span>→</span>
+                    View Details <span>ΓåÆ</span>
                   </Link>
                 </div>
               </div>
@@ -745,7 +811,7 @@ function PlanPage() {
   const [to, setTo] = useState(params.get('to') || '');
   const [duration, setDuration] = useState(params.get('duration') || '3 Days');
   const [travelers, setTravelers] = useState(params.get('travelers') || '2 Travelers');
-  const [budget, setBudget] = useState('₹10,000 – ₹20,000');
+  const [budget, setBudget] = useState('Γé╣10,000 ΓÇô Γé╣20,000');
   const [style, setStyle] = useState(params.get('style') || 'Relaxing');
   const [interests, setInterests] = useState(['Nature', 'Food']);
   const navigate = useNavigate();
@@ -815,7 +881,7 @@ function PlanPage() {
           <label>
             Estimated budget
             <select value={budget} onChange={e => setBudget(e.target.value)}>
-              {['Under ₹5,000', '₹5,000 – ₹10,000', '₹10,000 – ₹20,000', '₹20,000 – ₹40,000', '₹40,000+'].map(item => (
+              {['Under Γé╣5,000', 'Γé╣5,000 ΓÇô Γé╣10,000', 'Γé╣10,000 ΓÇô Γé╣20,000', 'Γé╣20,000 ΓÇô Γé╣40,000', 'Γé╣40,000+'].map(item => (
                 <option key={item}>{item}</option>
               ))}
             </select>
@@ -851,7 +917,7 @@ function PlanPage() {
         </div>
 
         <button className="search-button plan-submit" type="submit">
-          Generate My Trip <span>→</span>
+          Generate My Trip <span>ΓåÆ</span>
         </button>
 
         <small className="disclaimer">
@@ -873,7 +939,7 @@ function ItineraryPage() {
     ['Signature sights', 'Visit a well-known local attraction and enjoy regional food.'],
     ['Local experiences', 'Choose an outdoor activity or cultural experience.'],
     ['Beyond the centre', 'Explore a nearby natural or historic attraction.'],
-    ['Slow travel day', 'Enjoy a relaxed morning and discover local cafés.'],
+    ['Slow travel day', 'Enjoy a relaxed morning and discover local caf├⌐s.'],
     ['Hidden gems', 'Leave time for lesser-known stops and local recommendations.'],
     ['Nature & culture', 'Enjoy local landscapes, heritage and regional flavours.'],
   ];
@@ -882,7 +948,7 @@ function ItineraryPage() {
     <main className="itinerary-page">
       <p className="section-eyebrow">YOUR PERSONAL TRAVEL OUTLINE</p>
       <h1>Your {destination} itinerary<span>.</span></h1>
-      <p>{duration} · Suggested travel plan</p>
+      <p>{duration} ┬╖ Suggested travel plan</p>
 
       <div className="disclaimer-box">
         This is a suggested itinerary. Confirm local opening times, transport and current prices before travelling.
@@ -898,7 +964,7 @@ function ItineraryPage() {
         </article>
       ))}
 
-      <Link className="nav-cta" to="/plan">Edit trip preferences →</Link>
+      <Link className="nav-cta" to="/plan">Edit trip preferences ΓåÆ</Link>
     </main>
   );
 }
@@ -906,10 +972,10 @@ function ItineraryPage() {
 function SimplePage({ title, description }) {
   return (
     <main className="simple-page">
-      <p className="section-eyebrow">YOUR JOURNEY · YOUR INDIA</p>
+      <p className="section-eyebrow">YOUR JOURNEY ┬╖ YOUR INDIA</p>
       <h1>{title}<span>.</span></h1>
       <p>{description}</p>
-      <Link className="nav-cta" to="/plan">Plan a trip →</Link>
+      <Link className="nav-cta" to="/plan">Plan a trip ΓåÆ</Link>
     </main>
   );
 }
@@ -937,7 +1003,7 @@ function ExplorePage() {
                 <strong>{place.name}</strong>
                 <small>{place.region}</small>
               </span>
-              <span className="round-arrow">↗</span>
+              <span className="round-arrow">Γåù</span>
             </span>
           </Link>
         ))}
@@ -946,44 +1012,136 @@ function ExplorePage() {
   );
 }
 
-function App() {
+
+function AppShell() {
+  
+const [authMode, setAuthMode] = useState(null);
+const [pendingDestination, setPendingDestination] = useState(null);
+
+const location = useLocation();
+const navigate = useNavigate();
+const { user, logout } = useAuth();
+
+useEffect(() => {
+  if (user && pendingDestination) {
+    navigate(pendingDestination);
+    setPendingDestination(null);
+  }
+}, [user, pendingDestination, navigate]);
+
+
+  useEffect(() => {
+    if (
+      location.pathname === "/login" ||
+      location.pathname === "/register"
+    ) {
+      setAuthMode(
+        location.pathname === "/register" ? "register" : "login"
+      );
+      navigate("/", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+ 
+const openAuth = (mode = "login", destination = null) => {
+  setPendingDestination(destination);
+  setAuthMode(mode);
+};
+
+
+const closeAuth = () => {
+  setAuthMode(null);
+};
+
+  const navbar = (
+    <Navbar
+      onOpenAuth={openAuth}
+      isAuthenticated={Boolean(user)}
+      onLogout={logout}
+    />
+  );
+
   return (
-    <BrowserRouter>
+    <>
       <Routes>
-        <Route path="/" element={<><Navbar /><Home /></>} />
-        <Route path="/explore" element={<><Navbar /><ExplorePage /></>} />
-        <Route path="/destinations/:slug" element={<DestinationPage />} />
-        <Route path="/plan" element={<><Navbar /><PlanPage /></>} />
-        <Route path="/itinerary" element={<><Navbar /><ItineraryPage /></>} />
         <Route
-          path="/login"
+          path="/"
           element={
             <>
-              <Navbar />
-              <SimplePage
-                title="Welcome back"
-                description="Your saved journeys will appear here once authentication is connected."
-              />
+              {navbar}
+              <Home
+  isAuthenticated={Boolean(user)}
+  onOpenAuth={openAuth}
+/>
             </>
           }
         />
+
         <Route
-          path="/register"
+          path="/dashboard"
           element={
             <>
-              <Navbar />
-              <SimplePage
-                title="Start your story"
-                description="Create your Tripora account to keep your journeys together."
-              />
+              {navbar}
+              <Home
+  isAuthenticated={Boolean(user)}
+  onOpenAuth={openAuth}
+/>
             </>
           }
         />
+
+        <Route
+          path="/explore"
+          element={
+            <>
+              {navbar}
+              <ExplorePage />
+            </>
+          }
+        />
+
+        <Route
+          path="/destinations/:slug"
+          element={
+            <>
+              <Navbar
+                onOpenAuth={openAuth}
+                isAuthenticated={Boolean(user)}
+                onLogout={logout}
+              />
+              <DestinationPage onOpenAuth={openAuth} />
+            </>
+          }
+        />
+
+        <Route
+          path="/plan"
+          element={
+            <>
+              {navbar}
+              <PlanPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/itinerary"
+          element={
+            <>
+              {navbar}
+              <ItineraryPage />
+            </>
+          }
+        />
+
+        <Route path="/login" element={null} />
+        <Route path="/register" element={null} />
+
         <Route
           path="*"
           element={
             <>
-              <Navbar />
+              {navbar}
               <SimplePage
                 title="A little detour"
                 description="Let's get you back to your next adventure."
@@ -992,8 +1150,19 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+
+      {authMode && (
+        <AuthModal
+          mode={authMode}
+          onClose={closeAuth}
+          onModeChange={setAuthMode}
+        />
+      )}
+    </>
   );
+  
+}
+export default function App() {
+  return <AppShell />;
 }
 
-export default App;
