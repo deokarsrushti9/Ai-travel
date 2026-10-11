@@ -170,7 +170,7 @@ img { display: block; max-width: 100%; }
 .video-caption strong { font-size: 10px; }
 .video-caption small { font-size: 9px; color: #ffffffcf; }
 .goa-paper > .quick-planner { padding: 17px; border: 1px solid #ebe7dd; box-shadow: 0 8px 25px #102a1d0b; }
-.goa-paper > .quick-planner:before { content: '✳  Plan Your Goa Trip'; display: block; margin-bottom: 9px; font: 600 19px var(--serif); }
+.goa-paper > .quick-planner:before { content: 'Γ£│  Plan Your Goa Trip'; display: block; margin-bottom: 9px; font: 600 19px var(--serif); }
 .goa-paper > .quick-planner:after { content: 'Get a personalized itinerary based on your travel style, budget and duration.'; display: block; margin-bottom: 13px; color: #687168; font-size: 10px; line-height: 1.5; }
 .goa-paper > .quick-planner .quick-fields { grid-template-columns: 1fr; gap: 7px; }
 .goa-paper > .quick-planner .quick-fields label { padding: 8px 10px; }
@@ -2553,4 +2553,237 @@ html {
   .hero-progress-bars button.active {
     width: 22px;
   }
+}
+
+/* Authentication modal: layered over the existing Tripora UI without replacing it. */
+.nav-auth-trigger {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  line-height: 1;
+}
+.tripora-auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  overflow-y: auto;
+  background: rgba(10, 19, 16, .58);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: tripora-auth-fade .18s ease-out;
+}
+.tripora-auth-modal {
+  position: relative;
+  width: min(100%, 560px);
+  max-height: calc(100dvh - 44px);
+  overflow-y: auto;
+  background: #fffefa;
+  color: #17332f;
+  border-radius: 22px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .3);
+  animation: tripora-auth-rise .22s ease-out;
+}
+.tripora-auth-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #17332f;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+}
+.tripora-auth-close:hover { background: #f0eee7; }
+.tripora-auth-content { padding: 48px 48px 34px; }
+.tripora-auth-eyebrow {
+  margin: 0 0 12px;
+  color: #b56f2e;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+}
+.tripora-auth-content h2 {
+  margin: 0;
+  color: #173f38;
+  font: 600 clamp(27px, 4vw, 36px)/1.2 var(--serif, Georgia, serif);
+  letter-spacing: -.7px;
+  text-align: center;
+}
+.tripora-auth-subtitle {
+  max-width: 390px;
+  margin: 12px auto 24px;
+  color: #747a72;
+  font-size: 12px;
+  line-height: 1.65;
+  text-align: center;
+}
+.tripora-auth-error {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #efc3b4;
+  border-radius: 4px;
+  background: #fff0e9;
+  color: #a53e2a;
+  font-size: 12px;
+}
+.tripora-auth-form { display: flex; flex-direction: column; gap: 9px; }
+.tripora-auth-form label {
+  margin-top: 5px;
+  color: #29463f;
+  font-size: 11px;
+  font-weight: 600;
+}
+.tripora-auth-form input {
+  width: 100%;
+  min-height: 47px;
+  padding: 0 14px;
+  border: 1px solid #dcd9ce;
+  border-radius: 5px;
+  outline: none;
+  background: #fffefa;
+  color: #17332f;
+  font-size: 13px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.tripora-auth-form input:focus {
+  border-color: #39766a;
+  box-shadow: 0 0 0 3px rgba(6, 63, 57, .1);
+}
+.tripora-auth-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 49px;
+  margin-top: 14px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green, #063f39);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background .2s, transform .2s;
+}
+.tripora-auth-submit:hover { background: #0d554c; transform: translateY(-1px); }
+.tripora-auth-submit:disabled { cursor: wait; opacity: .7; transform: none; }
+.tripora-auth-switch {
+  margin: 21px 0 0;
+  color: #747a72;
+  font-size: 11px;
+  text-align: center;
+}
+.tripora-auth-switch button {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #73958a;
+  background: transparent;
+  color: #174b42;
+  font-size: inherit;
+  font-weight: 700;
+}
+.tripora-auth-legal {
+  max-width: 380px;
+  margin: 22px auto 0;
+  color: #92948c;
+  font-size: 10px;
+  line-height: 1.55;
+  text-align: center;
+}
+@keyframes tripora-auth-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tripora-auth-rise { from { opacity: 0; transform: translateY(8px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 600px) {
+  .tripora-auth-overlay { padding: 12px; align-items: center; }
+  .tripora-auth-modal { max-height: calc(100dvh - 24px); border-radius: 17px; }
+  .tripora-auth-content { padding: 48px 22px 27px; }
+
+
+
+  .nav-login-button {
+    border: 1px solid #0b3f39;
+    background: transparent;
+    color: #0b3f39;
+    padding: 9px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+  }
+  
+  .nav-login-button:hover {
+    background: #0b3f39;
+    color: #fff;
+  }
+  
+}
+
+
+/* Tripora navbar authentication link */
+.nav-auth-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--green);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-auth-link:hover {
+  color: #b56f2e;
+  border-bottom-color: var(--orange);
+}
+
+.nav-auth-link:focus-visible {
+  outline: 1px solid var(--orange);
+  outline-offset: 4px;
+}
+
+
+.navbar {
+  justify-content: initial;
+}
+
+.nav-links {
+  flex: 1;
+  justify-content: center;
+  gap: clamp(16px, 2.4vw, 36px);
+}
+
+.nav-auth-link {
+  padding: 0;
+  margin-left: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.nav-auth-link:hover {
+  color: #b56f2e;
 }
